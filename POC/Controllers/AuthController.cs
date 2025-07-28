@@ -33,9 +33,6 @@ namespace POC.Controllers
 
             }
 
-            var isMatch = BCrypt.Net.BCrypt.Verify("Choss@17", "$2a$11$Oe1DHjIxY2WmuVSw2a5u4evTMjYbeRxq8cHVPw06g8Z3nuW3bSfVq");
-            Console.WriteLine($"✅ Match: {isMatch}");
-
             bool passwordMatches = BCrypt.Net.BCrypt.Verify(request.Password, admin.PasswordHash);
 
             if (!passwordMatches)
