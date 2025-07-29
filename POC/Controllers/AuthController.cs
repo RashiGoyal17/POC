@@ -42,6 +42,7 @@ namespace POC.Controllers
             }
             //if (admin == null || !BCrypt.Net.BCrypt.Verify(request.Password, admin.PasswordHash))
             //    return Unauthorized(new { message = "Invalid username or password" });
+            // added comment
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_config["Jwt:Key"]);
