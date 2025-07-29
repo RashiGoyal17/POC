@@ -16,10 +16,10 @@ namespace POC.Services
 
         public async Task<Admin?> GetAdminByUsernameAsync(string username)
         {
-            var parameters = new SqlParameter[]
+            var parameters = new[]
             {
-                new SqlParameter("@Username", username)
-            };
+        new SqlParameter("@Username", username)
+    };
 
             var table = await _dbHelper.ExecuteStoredProcedureAsync("GetAdminByUsername", parameters);
 
@@ -30,11 +30,13 @@ namespace POC.Services
 
             return new Admin
             {
-                AdminId = Convert.ToInt32(row["AdminId"]),
-                UserName = row["Username"].ToString(),
-                PasswordHash = row["PasswordHash"].ToString()
+                AdminId = row.Field<int>("AdminId"),
+                UserName = row.Field<string>("Username"),
+                PasswordHash = row.Field<string>("PasswordHash")
             };
         }
+
+
     }
 }
 

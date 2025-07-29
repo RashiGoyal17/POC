@@ -38,24 +38,23 @@ namespace POC.DataAccess
         {
             var dataTable = new DataTable();
 
-            await using var conn = new SqlConnection(_connectionString);
-            await using var cmd = new SqlCommand(procedureName, conn)
+            await using var connection = new SqlConnection(_connectionString);
+            await using var command = new SqlCommand(procedureName, connection)
             {
                 CommandType = CommandType.StoredProcedure
             };
 
-            if (parameters != null)
-            {
-                cmd.Parameters.AddRange(parameters);
-            }
+            if (parameters?.Length > 0)
+                command.Parameters.AddRange(parameters);
 
-            await conn.OpenAsync();
+            await connection.OpenAsync();
 
-            await using var reader = await cmd.ExecuteReaderAsync();
+            await using var reader = await command.ExecuteReaderAsync();
             dataTable.Load(reader);
 
             return dataTable;
         }
+
 
         public async Task<List<string>> ExecuteQueryAsync(string sql)
         {
