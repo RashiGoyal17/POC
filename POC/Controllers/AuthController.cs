@@ -63,5 +63,40 @@ namespace POC.Controllers
 
             return Ok(new { token = tokenHandler.WriteToken(token) });
         }
-    }
+
+
+
+        [HttpPost("signup")]
+        public async Task<IActionResult> Signup([FromBody] SignUpRequest request)
+        {
+            if (request.Password != request.ConfirmPassword)
+                return BadRequest(new { message = "Passwords do not match" });
+
+            if (await _authService.UserExistsAsync(request.Username))
+                return BadRequest(new { message = "Username already taken" });
+
+            var admin = await _authService.CreateAdminAsync(request.Username, request.Email, request.Password);
+
+            // Auto-login after signup (optional)
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_config["Jwt:Key"]);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+            new Claim(ClaimTypes.Name, admin.UserName),
+            new Claim(ClaimTypes.Role, "Admin")
+        }),
+                Expires = DateTime.UtcNow.AddHours(2),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+
+            return Ok(new { token = tokenHandler.WriteToken(token) });
+
+
+        }
+        }
 }
