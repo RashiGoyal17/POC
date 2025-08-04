@@ -69,8 +69,8 @@ namespace POC.Controllers
         [HttpPost("signup")]
         public async Task<IActionResult> Signup([FromBody] SignUpRequest request)
         {
-            if (request.Password != request.ConfirmPassword)
-                return BadRequest(new { message = "Passwords do not match" });
+            //if (request.Password != request.ConfirmPassword)
+            //    return BadRequest(new { message = "Passwords do not match" });
 
             if (await _authService.UserExistsAsync(request.Username))
                 return BadRequest(new { message = "Username already taken" });
@@ -98,5 +98,5 @@ namespace POC.Controllers
 
 
         }
-        }
+    }
 }

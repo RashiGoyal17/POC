@@ -49,10 +49,10 @@ namespace POC.Services
 
             var parameters = new[]
             {
-        new SqlParameter("@Username", username),
-        new SqlParameter("@Email", email),
-        new SqlParameter("@PasswordHash", passwordHash)
-    };
+                new SqlParameter("@Username", username),
+                new SqlParameter("@Email", email),
+                new SqlParameter("@PasswordHash", passwordHash)
+            };
 
             var table = await _dbHelper.ExecuteStoredProcedureAsync("CreateAdmin", parameters);
 
