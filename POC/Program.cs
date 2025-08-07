@@ -25,18 +25,20 @@ builder.Services.AddControllers();
 //    });
 //});
 
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy("AllowAngularApp", policy =>
-//    {
-//        policy.WithOrigins(
-//                "http://localhost:4200",
-//                "https://resource-tracker-app-chi.vercel.app"
-//              )
-//              .AllowAnyMethod()
-//              .AllowAnyHeader();
-//    });
-//});
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp", policy =>
+    {
+        policy.WithOrigins(
+                "http://localhost:4200",
+                "https://resource-tracker-app-chi.vercel.app"
+              )
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 
 
@@ -61,9 +63,9 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 
-//app.UseCors("AllowAngularApp");
+app.UseCors("AllowAngularApp");
 
-app.UseCors(cors => cors.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+//app.UseCors(cors => cors.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
 app.UseSwagger();
 
