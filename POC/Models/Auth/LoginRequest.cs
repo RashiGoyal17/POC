@@ -1,4 +1,4 @@
-﻿namespace POC.Models
+﻿namespace POC.Models.Auth
 {
     public class LoginRequest
     {

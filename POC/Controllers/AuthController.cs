@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using POC.Models;
+using POC.Models.Auth;
 using POC.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -24,8 +24,8 @@ namespace POC.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            var admin = await _authService.GetAdminByUsernameAsync(request.Username);
-            if (admin == null)
+            var loginResult = await _authService.GetAdminByUsernameAsync(request.Username);
+            if (loginResult?.PasswordHash == null)
             {
                 Console.WriteLine("⚠️ Admin not found.");
                 Console.WriteLine($"Received username: {request.Username}");
@@ -33,7 +33,7 @@ namespace POC.Controllers
 
             }
 
-            bool passwordMatches = BCrypt.Net.BCrypt.Verify(request.Password, admin.PasswordHash);
+            bool passwordMatches = BCrypt.Net.BCrypt.Verify(request.Password, loginResult.PasswordHash);
 
             if (!passwordMatches)
             {
@@ -52,8 +52,8 @@ namespace POC.Controllers
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.Name, admin.UserName),
-                    new Claim(ClaimTypes.Role, "Admin")
+                    //new Claim(ClaimTypes.Name, admin.UserName),
+                    new Claim("Role", loginResult.RoleName)
                 }),
                 Expires = DateTime.UtcNow.AddHours(2),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -75,7 +75,7 @@ namespace POC.Controllers
             if (await _authService.UserExistsAsync(request.Username))
                 return BadRequest(new { message = "Username already taken" });
 
-            var admin = await _authService.CreateAdminAsync(request.Username, request.Email, request.Password);
+            var signupResult = await _authService.CreateAdminAsync(request);
 
             // Auto-login after signup (optional)
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -85,8 +85,8 @@ namespace POC.Controllers
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-            new Claim(ClaimTypes.Name, admin.UserName),
-            new Claim(ClaimTypes.Role, "Admin")
+            //new Claim(ClaimTypes.Name, admin.UserName),
+            new Claim("Role", signupResult.RoleName)
         }),
                 Expires = DateTime.UtcNow.AddHours(2),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -95,8 +95,21 @@ namespace POC.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return Ok(new { token = tokenHandler.WriteToken(token) });
-
-
         }
+
+        [HttpGet("RoleOptions")]
+        public async Task<IActionResult> GEtRolesOptionsAsync([FromBody] Role roleOptions)
+        {
+            var result = await _authService.GetRoleOptionsAsync();
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return StatusCode(500, "Failed to fetch role options");
+            }
+        }
+
     }
 }
