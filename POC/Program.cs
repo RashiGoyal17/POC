@@ -27,18 +27,18 @@ builder.Services.AddControllers();
 
 
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAngularApp", policy =>
-    {
-        policy.WithOrigins(
-                "http://localhost:4200",
-                "https://resource-tracker-app-chi.vercel.app"
-              )
-              .AllowAnyMethod()
-              .AllowAnyHeader();
-    });
-});
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("AllowAngularApp", policy =>
+//    {
+//        policy.WithOrigins(
+//                "http://localhost:4200",
+//                "https://resource-tracker-app-chi.vercel.app"
+//              )
+//              .AllowAnyMethod()
+//              .AllowAnyHeader();
+//    });
+//});
 
 
 
@@ -99,7 +99,8 @@ if (app.Environment.IsDevelopment())
 app.UseRouting();
 
 // Apply CORS after routing, before auth
-app.UseCors("AllowAngularApp");
+//app.UseCors("AllowAngularApp");
+app.UseCors(cors => cors.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
 app.UseHttpsRedirection();
 

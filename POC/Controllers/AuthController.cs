@@ -98,12 +98,12 @@ namespace POC.Controllers
         }
 
         [HttpGet("RoleOptions")]
-        public async Task<IActionResult> GEtRolesOptionsAsync([FromBody] Role roleOptions)
+        public async Task<IActionResult> GetRolesOptionsAsync()
         {
             var result = await _authService.GetRoleOptionsAsync();
             if (result != null)
             {
-                return Ok(result);
+                return Ok(new { roleOptionList = result });
             }
             else
             {
