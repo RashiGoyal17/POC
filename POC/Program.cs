@@ -60,30 +60,56 @@ builder.Services.AddSwaggerGen();
 
 
 
+//var app = builder.Build();
+
+
+//app.UseCors("AllowAngularApp");
+
+////app.UseCors(cors => cors.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+
+//app.UseSwagger();
+
+//// Configure the HTTP request pipeline.
+//if (app.Environment.IsDevelopment())
+//{ 
+//    app.UseSwaggerUI();
+//}
+
+
+//app.UseHttpsRedirection();
+
+//app.UseAuthentication();
+
+//app.UseAuthorization();
+
+//app.MapControllers();
+
+//app.Run();
+
 var app = builder.Build();
 
-
-app.UseCors("AllowAngularApp");
-
-//app.UseCors(cors => cors.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
-
+// Use Swagger (optional)
 app.UseSwagger();
-
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
-{ 
+{
     app.UseSwaggerUI();
 }
 
+// Ensure routing comes before CORS
+app.UseRouting();
+
+// Apply CORS after routing, before auth
+app.UseCors("AllowAngularApp");
 
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
-
 app.UseAuthorization();
 
+// Endpoint mapping comes last
 app.MapControllers();
 
 app.Run();
+
 
 
