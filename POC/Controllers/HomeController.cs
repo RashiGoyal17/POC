@@ -134,7 +134,7 @@ namespace POC.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState); // Will return detailed validation errors
+                return BadRequest(ModelState); 
             }
 
 

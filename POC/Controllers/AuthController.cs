@@ -53,7 +53,7 @@ namespace POC.Controllers
                 Subject = new ClaimsIdentity(new[]
                 {
                     //new Claim(ClaimTypes.Name, admin.UserName),
-                    new Claim("Role", loginResult.RoleName)
+                    new Claim(ClaimTypes.Role, loginResult.RoleName)
                 }),
                 Expires = DateTime.UtcNow.AddHours(2),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
