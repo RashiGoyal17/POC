@@ -17,7 +17,7 @@ namespace POC.Repositories
         Task<List<string>> GetManagersAsync();
         Task<List<string>> GetProjectsAsync();
         Task AddEmployeesAsync(List<Employee> employees);
-
+        Task<DashboardData> GetDashboardDataAsync();
 
     }
 }

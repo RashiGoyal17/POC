@@ -11,6 +11,8 @@ namespace POC.DataAccess
 
         Task<List<string>> ExecuteQueryAsync(string sql);
 
+        Task<T> ExecuteMultiResultStoredProcedureAsync<T>(string storedProcedureName, Func<SqlDataReader, Task<T>> mapFunction, SqlParameter[]? parameters = null);
+
     }
 }
 

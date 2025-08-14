@@ -153,5 +153,26 @@ namespace POC.Controllers
             }
         }
 
+        [HttpGet("DashboardData")]
+        public async Task<IActionResult> GetDashboardData()
+        {
+            try
+            {
+                var data = await _employeeService.GetDashboardDataAsync();
+                if (data == null)
+                {
+                    return NotFound("Dashboard data not found.");
+                }
+                _logger.LogInformation("Fetched dashboard data");
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching dashboard data from stored procedure.");
+                return StatusCode(500, new { message = "Error fetching dashboard data", error = ex.Message });
+            }
+        }
+
+
     }
 }

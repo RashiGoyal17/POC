@@ -75,6 +75,27 @@ namespace POC.DataAccess
             return result;
         }
 
+        public async Task<T> ExecuteMultiResultStoredProcedureAsync<T>(
+            string storedProcedureName,
+            Func<SqlDataReader, Task<T>> mapFunction,
+            SqlParameter[]? parameters = null)
+        {
+            await using var connection = new SqlConnection(_connectionString);
+            await using var command = new SqlCommand(storedProcedureName, connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            if (parameters?.Length > 0)
+                command.Parameters.AddRange(parameters);
+
+            await connection.OpenAsync();
+
+            await using var reader = await command.ExecuteReaderAsync();
+            return await mapFunction(reader);
+        }
+
+
     }
 }
 

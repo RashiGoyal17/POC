@@ -46,11 +46,15 @@ namespace POC.Services
         public Task<List<string>> GetSkillsAsync() => _repository.GetSkillsAsync();
         public Task<List<string>> GetProjectsAsync() => _repository.GetProjectsAsync();
         public Task<List<string>> GetManagersAsync() => _repository.GetManagersAsync();
-
         public async Task AddEmployeesAsync(List<Employee> employees)
         {
             await _repository.AddEmployeesAsync(employees);
         }
+        public async Task<DashboardData> GetDashboardDataAsync()
+        {
+            return await _repository.GetDashboardDataAsync();
+        }
+
 
     }
 }

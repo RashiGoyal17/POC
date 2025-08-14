@@ -207,6 +207,59 @@ namespace POC.Repositories
         }
 
 
+        public async Task<DashboardData> GetDashboardDataAsync()
+        {
+            // The mapping logic is encapsulated within a lambda function.
+            // This function reads each result set from the SqlDataReader.
+            return await _dbHelper.ExecuteMultiResultStoredProcedureAsync(
+                "GetDashboardData",
+                async (reader) =>
+                {
+                    var dashboardData = new DashboardData();
+
+                    // Read the first result set (Metrics)
+                    if (await reader.ReadAsync())
+                    {
+                        dashboardData.Metrics = new DashboardMetrics
+                        {
+                            TotalEmployees = Convert.ToInt32(reader["TotalEmployees"]),
+                            ProjectsActive = Convert.ToInt32(reader["ProjectsActive"]),
+                            Billable_FTEs = Convert.ToInt32(reader["Billable_FTEs"]),
+                            UnassignedEmployees = Convert.ToInt32(reader["UnassignedEmployees"])
+                        };
+                    }
+
+                    // Read the second result set (Employee Distribution)
+                    await reader.NextResultAsync();
+                    var employeeDistribution = new List<RoleCount>();
+                    while (await reader.ReadAsync())
+                    {
+                        employeeDistribution.Add(new RoleCount
+                        {
+                            Role = reader["Role"].ToString(),
+                            Count = Convert.ToInt32(reader["Count"])
+                        });
+                    }
+                    dashboardData.EmployeeDistribution = employeeDistribution;
+
+                    // Read the third result set (Project Assignments)
+                    await reader.NextResultAsync();
+                    var projectAssignments = new List<AssignedProjects>();
+                    while (await reader.ReadAsync())
+                    {
+                        projectAssignments.Add(new AssignedProjects
+                        {
+                            Project = reader["Project"].ToString(),
+                            AssignedEmployees = Convert.ToInt32(reader["AssignedEmployees"])
+                        });
+                    }
+                    dashboardData.ProjectAssignments = projectAssignments;
+
+                    return dashboardData;
+                });
+        }
+
+
     }
 }
 
