@@ -1,7 +1,8 @@
 ﻿using Microsoft.Data.SqlClient;
 using POC.DataAccess;
-using System.Data;
+using POC.Models;
 using POC.Models.Auth;
+using System.Data;
 
 namespace POC.Services
 {
@@ -85,6 +86,20 @@ namespace POC.Services
             }
             return roleOptions;
         }
+
+        public async Task<List<user>> GetAuthUser()
+        {
+            var result = await _dbHelper.ExecuteStoredProcedureAsync("GetAuthUser");
+
+            return result.AsEnumerable().Select(row => new user
+            {
+                Username = row["Username"].ToString(),
+                Email = row["Email"].ToString(),
+                Role = row["Role"].ToString(),
+                Doj = row["Doj"] == DBNull.Value ? null : Convert.ToDateTime(row["Doj"])
+            }).ToList();
+        }
+
 
 
     }

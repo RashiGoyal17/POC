@@ -111,5 +111,19 @@ namespace POC.Controllers
             }
         }
 
+        [HttpGet("GetAuthUser")]
+        public async Task<IActionResult> GetAuth()
+        {
+            try
+            {
+                var AuthUsers = await _authService.GetAuthUser();
+                return Ok(AuthUsers);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, "An Error occured while fetching AuthUser");
+            }
+        }
+
     }
 }
